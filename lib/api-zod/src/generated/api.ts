@@ -93,6 +93,23 @@ export const CreateRecipeBody = zod.object({
 });
 
 /**
+ * Fetches a URL and extracts recipe information using structured data or AI parsing. Returns parsed data for user review — does not save the recipe.
+ * @summary Import recipe data from a URL
+ */
+export const ImportRecipeFromUrlBody = zod.object({
+  url: zod.string().url(),
+});
+
+export const ImportRecipeFromUrlResponse = zod.object({
+  name: zod.string(),
+  ingredients: zod.array(zod.string()),
+  instructions: zod.string(),
+  prepTime: zod.number().nullable(),
+  calories: zod.number().nullable(),
+  sourceUrl: zod.string(),
+});
+
+/**
  * @summary Get a recipe by ID
  */
 export const GetRecipeParams = zod.object({

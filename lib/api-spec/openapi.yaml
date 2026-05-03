@@ -173,6 +173,38 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /recipes/import-url:
+    post:
+      operationId: importRecipeFromUrl
+      tags: [recipes]
+      summary: Import recipe data from a URL
+      description: Fetches a URL and extracts recipe information using structured data or AI parsing. Returns parsed data for user review — does not save the recipe.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImportRecipeUrlBody"
+      responses:
+        "200":
+          description: Parsed recipe data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImportedRecipeData"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Could not extract recipe from URL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /recipes/{id}:
     get:
       operationId: getRecipe
@@ -929,6 +961,41 @@ components:
           type: ["string", "null"]
       required:
         - name
+
+    # Recipe import
+    ImportRecipeUrlBody:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+      required:
+        - url
+
+    ImportedRecipeData:
+      type: object
+      properties:
+        name:
+          type: string
+        ingredients:
+          type: array
+          items:
+            type: string
+        instructions:
+          type: string
+        prepTime:
+          type: ["integer", "null"]
+        calories:
+          type: ["integer", "null"]
+        sourceUrl:
+          type: string
+      required:
+        - name
+        - ingredients
+        - instructions
+        - prepTime
+        - calories
+        - sourceUrl
 
     # Dashboard
     DashboardData:

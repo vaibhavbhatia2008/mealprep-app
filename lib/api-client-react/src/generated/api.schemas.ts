@@ -218,6 +218,21 @@ export interface CreateGroceryListBody {
   items?: CreateGroceryItemBody[];
 }
 
+export interface ImportRecipeUrlBody {
+  url: string;
+}
+
+export interface ImportedRecipeData {
+  name: string;
+  ingredients: string[];
+  instructions: string;
+  /** @nullable */
+  prepTime: number | null;
+  /** @nullable */
+  calories: number | null;
+  sourceUrl: string;
+}
+
 export interface DashboardData {
   todayMeals: MealWithRecipe[];
   currentPlan: MealPlanWithMeals | null;

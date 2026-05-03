@@ -28,6 +28,8 @@ import type {
   GroceryList,
   GroceryListWithItems,
   HealthStatus,
+  ImportRecipeUrlBody,
+  ImportedRecipeData,
   ListRecipesParams,
   LoginBody,
   Meal,
@@ -620,6 +622,93 @@ export const useCreateRecipe = <
   TContext
 > => {
   return useMutation(getCreateRecipeMutationOptions(options));
+};
+
+/**
+ * Fetches a URL and extracts recipe information using structured data or AI parsing. Returns parsed data for user review — does not save the recipe.
+ * @summary Import recipe data from a URL
+ */
+export const getImportRecipeFromUrlUrl = () => {
+  return `/api/recipes/import-url`;
+};
+
+export const importRecipeFromUrl = async (
+  importRecipeUrlBody: ImportRecipeUrlBody,
+  options?: RequestInit,
+): Promise<ImportedRecipeData> => {
+  return customFetch<ImportedRecipeData>(getImportRecipeFromUrlUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(importRecipeUrlBody),
+  });
+};
+
+export const getImportRecipeFromUrlMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof importRecipeFromUrl>>,
+    TError,
+    { data: BodyType<ImportRecipeUrlBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof importRecipeFromUrl>>,
+  TError,
+  { data: BodyType<ImportRecipeUrlBody> },
+  TContext
+> => {
+  const mutationKey = ["importRecipeFromUrl"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof importRecipeFromUrl>>,
+    { data: BodyType<ImportRecipeUrlBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return importRecipeFromUrl(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ImportRecipeFromUrlMutationResult = NonNullable<
+  Awaited<ReturnType<typeof importRecipeFromUrl>>
+>;
+export type ImportRecipeFromUrlMutationBody = BodyType<ImportRecipeUrlBody>;
+export type ImportRecipeFromUrlMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Import recipe data from a URL
+ */
+export const useImportRecipeFromUrl = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof importRecipeFromUrl>>,
+    TError,
+    { data: BodyType<ImportRecipeUrlBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof importRecipeFromUrl>>,
+  TError,
+  { data: BodyType<ImportRecipeUrlBody> },
+  TContext
+> => {
+  return useMutation(getImportRecipeFromUrlMutationOptions(options));
 };
 
 /**
