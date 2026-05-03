@@ -28,6 +28,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { useColors } from "@/hooks/useColors";
+import { useNotifications } from "@/contexts/NotificationsContext";
 
 type Sheet = "create" | "generate" | null;
 
@@ -49,6 +50,7 @@ export default function GroceryScreen() {
     { query: { enabled: activeListId !== null } }
   );
 
+  const { fireNow } = useNotifications();
   const createMutation = useCreateGroceryList();
   const deleteMutation = useDeleteGroceryList();
   const toggleMutation = useToggleGroceryItem();
@@ -80,6 +82,7 @@ export default function GroceryScreen() {
           setGenListName("");
           setActiveListId(data.id);
           Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          fireNow("Grocery list ready!", `${data.items?.length ?? 0} items generated for your week.`);
         },
         onError: (err: unknown) => {
           const msg =
