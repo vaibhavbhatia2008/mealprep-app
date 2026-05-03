@@ -76,7 +76,7 @@ export default function PlannerScreen() {
   const handleCreatePlan = () => {
     const monday = getMondayOfWeek(today);
     createPlanMutation.mutate(
-      { weekStart: monday.toISOString().split("T")[0] },
+      { data: { weekStart: monday.toISOString().split("T")[0] } },
       {
         onSuccess: () => {
           qc.invalidateQueries({ queryKey: ["getCurrentMealPlan"] });

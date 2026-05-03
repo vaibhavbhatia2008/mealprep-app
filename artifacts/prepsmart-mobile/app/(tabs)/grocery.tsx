@@ -57,7 +57,7 @@ export default function GroceryScreen() {
   const handleCreate = () => {
     if (!newListName.trim()) return;
     createMutation.mutate(
-      { name: newListName.trim() },
+      { data: { name: newListName.trim() } },
       {
         onSuccess: (data) => {
           qc.invalidateQueries({ queryKey: ["listGroceryLists"] });

@@ -68,11 +68,13 @@ export default function NewRecipeScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     createMutation.mutate(
       {
-        name: name.trim(),
-        ingredients: validIngredients,
-        instructions: instructions.trim(),
-        prepTime: prepTime ? parseInt(prepTime) : null,
-        calories: calories ? parseInt(calories) : null,
+        data: {
+          name: name.trim(),
+          ingredients: validIngredients,
+          instructions: instructions.trim(),
+          prepTime: prepTime ? parseInt(prepTime) : null,
+          calories: calories ? parseInt(calories) : null,
+        },
       },
       {
         onSuccess: (recipe) => {
@@ -89,7 +91,7 @@ export default function NewRecipeScreen() {
     if (!importUrl.trim()) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     importMutation.mutate(
-      { url: importUrl.trim() },
+      { data: { url: importUrl.trim() } },
       {
         onSuccess: (data) => {
           if (data.name) setName(data.name);
