@@ -44,7 +44,7 @@ export default function RegisterScreen() {
     setError("");
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     registerMutation.mutate(
-      { name: name.trim(), email: email.trim(), password },
+      { data: { name: name.trim(), email: email.trim(), password } },
       {
         onSuccess: async (data) => {
           await login(data.token, data.user);

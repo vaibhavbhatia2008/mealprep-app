@@ -40,7 +40,7 @@ export default function LoginScreen() {
     setError("");
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     loginMutation.mutate(
-      { email: email.trim(), password },
+      { data: { email: email.trim(), password } },
       {
         onSuccess: async (data) => {
           await login(data.token, data.user);
