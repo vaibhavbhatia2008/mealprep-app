@@ -185,6 +185,13 @@ export const ToggleRecipeFavoriteResponse = zod.object({
 });
 
 /**
+ * @summary Duplicate a recipe
+ */
+export const CloneRecipeParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+/**
  * @summary List meal plans
  */
 export const ListMealPlansResponseItem = zod.object({

@@ -116,6 +116,40 @@ router.delete("/recipes/:id", requireAuth, async (req, res): Promise<void> => {
   res.sendStatus(204);
 });
 
+router.post("/recipes/:id/clone", requireAuth, async (req, res): Promise<void> => {
+  const params = GetRecipeParams.safeParse(req.params);
+  if (!params.success) {
+    res.status(400).json({ error: params.error.message });
+    return;
+  }
+  const userId = req.user!.userId;
+  const [original] = await db
+    .select()
+    .from(recipesTable)
+    .where(and(eq(recipesTable.id, params.data.id), eq(recipesTable.userId, userId)));
+  if (!original) {
+    res.status(404).json({ error: "Recipe not found" });
+    return;
+  }
+  const [cloned] = await db
+    .insert(recipesTable)
+    .values({
+      userId,
+      name: `${original.name} (copy)`,
+      ingredients: original.ingredients,
+      instructions: original.instructions,
+      prepTime: original.prepTime,
+      calories: original.calories,
+      isFavorite: false,
+    })
+    .returning();
+  res.status(201).json({
+    ...cloned,
+    createdAt: cloned.createdAt.toISOString(),
+    updatedAt: cloned.updatedAt.toISOString(),
+  });
+});
+
 router.patch("/recipes/:id/favorite", requireAuth, async (req, res): Promise<void> => {
   const params = GetRecipeParams.safeParse(req.params);
   if (!params.success) {

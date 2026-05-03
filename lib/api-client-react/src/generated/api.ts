@@ -1052,6 +1052,90 @@ export const useToggleRecipeFavorite = <
 };
 
 /**
+ * @summary Duplicate a recipe
+ */
+export const getCloneRecipeUrl = (id: number) => {
+  return `/api/recipes/${id}/clone`;
+};
+
+export const cloneRecipe = async (
+  id: number,
+  options?: RequestInit,
+): Promise<Recipe> => {
+  return customFetch<Recipe>(getCloneRecipeUrl(id), {
+    ...options,
+    method: "POST",
+  });
+};
+
+export const getCloneRecipeMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof cloneRecipe>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof cloneRecipe>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  const mutationKey = ["cloneRecipe"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof cloneRecipe>>,
+    { id: number }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return cloneRecipe(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CloneRecipeMutationResult = NonNullable<
+  Awaited<ReturnType<typeof cloneRecipe>>
+>;
+
+export type CloneRecipeMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Duplicate a recipe
+ */
+export const useCloneRecipe = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof cloneRecipe>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof cloneRecipe>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  return useMutation(getCloneRecipeMutationOptions(options));
+};
+
+/**
  * @summary List meal plans
  */
 export const getListMealPlansUrl = () => {

@@ -3,15 +3,15 @@ import {
   useGetRecipe,
   useDeleteRecipe,
   useToggleRecipeFavorite,
+  useCloneRecipe,
   getGetRecipeQueryKey,
   getListRecipesQueryKey,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, Star, Clock, Flame, Edit2, Trash2, Check } from "lucide-react";
+import { ArrowLeft, Star, Clock, Flame, Edit2, Trash2, Check, Copy } from "lucide-react";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 
@@ -31,6 +31,7 @@ export default function RecipeDetail({ id }: Props) {
 
   const deleteMutation = useDeleteRecipe();
   const favMutation = useToggleRecipeFavorite();
+  const cloneMutation = useCloneRecipe();
 
   const handleDelete = () => {
     deleteMutation.mutate({ id: recipeId }, {
@@ -45,6 +46,17 @@ export default function RecipeDetail({ id }: Props) {
   const handleFav = () => {
     favMutation.mutate({ id: recipeId }, {
       onSuccess: () => qc.invalidateQueries({ queryKey: getGetRecipeQueryKey(recipeId) }),
+    });
+  };
+
+  const handleClone = () => {
+    cloneMutation.mutate({ id: recipeId }, {
+      onSuccess: (cloned) => {
+        qc.invalidateQueries({ queryKey: getListRecipesQueryKey() });
+        toast({ title: "Recipe duplicated", description: `"${cloned.name}" is ready to edit.` });
+        setLocation(`/recipes/${cloned.id}/edit`);
+      },
+      onError: () => toast({ variant: "destructive", title: "Failed to duplicate recipe" }),
     });
   };
 
@@ -89,6 +101,16 @@ export default function RecipeDetail({ id }: Props) {
             data-testid="button-favorite"
           >
             <Star className={`h-4 w-4 ${recipe.isFavorite ? "fill-amber-400 text-amber-400" : "text-muted-foreground"}`} />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={handleClone}
+            disabled={cloneMutation.isPending}
+            title="Duplicate recipe"
+            data-testid="button-clone"
+          >
+            <Copy className="h-4 w-4" />
           </Button>
           <Link href={`/recipes/${recipeId}/edit`}>
             <Button variant="outline" size="icon" data-testid="button-edit">
