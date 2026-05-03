@@ -158,6 +158,11 @@ export interface CreateMealBody {
   customName?: string | null;
 }
 
+export interface GenerateMealPlanBody {
+  /** Optional dietary preferences or constraints (e.g. 'high protein', 'vegetarian', 'no repeats') */
+  preferences?: string;
+}
+
 export type UpdateMealBodyMealType =
   (typeof UpdateMealBodyMealType)[keyof typeof UpdateMealBodyMealType];
 

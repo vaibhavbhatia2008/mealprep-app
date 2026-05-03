@@ -293,6 +293,55 @@ export const DeleteMealPlanParams = zod.object({
 });
 
 /**
+ * @summary AI-generate a full week of meals for a plan
+ */
+export const GenerateMealPlanParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const GenerateMealPlanBody = zod.object({
+  preferences: zod
+    .string()
+    .optional()
+    .describe(
+      "Optional dietary preferences or constraints (e.g. 'high protein', 'vegetarian', 'no repeats')",
+    ),
+});
+
+export const GenerateMealPlanResponse = zod.object({
+  id: zod.number(),
+  userId: zod.number(),
+  weekStart: zod.string(),
+  createdAt: zod.string(),
+  meals: zod.array(
+    zod.object({
+      id: zod.number(),
+      mealPlanId: zod.number(),
+      recipeId: zod.number().nullable(),
+      dayOfWeek: zod.number(),
+      mealType: zod.enum(["breakfast", "lunch", "dinner", "snack"]),
+      customName: zod.string().nullable(),
+      createdAt: zod.string(),
+      recipe: zod.union([
+        zod.object({
+          id: zod.number(),
+          userId: zod.number(),
+          name: zod.string(),
+          ingredients: zod.array(zod.string()),
+          instructions: zod.string(),
+          prepTime: zod.number().nullable(),
+          calories: zod.number().nullable(),
+          isFavorite: zod.boolean(),
+          createdAt: zod.string(),
+          updatedAt: zod.string(),
+        }),
+        zod.null(),
+      ]),
+    }),
+  ),
+});
+
+/**
  * @summary Add a meal to a plan
  */
 export const AddMealParams = zod.object({

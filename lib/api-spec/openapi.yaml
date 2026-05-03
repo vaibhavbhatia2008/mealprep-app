@@ -412,6 +412,43 @@ paths:
         "204":
           description: No content
 
+  /meal-plans/{id}/generate:
+    post:
+      operationId: generateMealPlan
+      tags: [mealPlans]
+      summary: AI-generate a full week of meals for a plan
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateMealPlanBody"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MealPlanWithMeals"
+        "400":
+          description: Bad request (no recipes saved)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Meal plan not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /meal-plans/{id}/meals:
     post:
       operationId: addMeal
@@ -883,6 +920,13 @@ components:
       required:
         - dayOfWeek
         - mealType
+
+    GenerateMealPlanBody:
+      type: object
+      properties:
+        preferences:
+          type: string
+          description: "Optional dietary preferences or constraints (e.g. 'high protein', 'vegetarian', 'no repeats')"
 
     UpdateMealBody:
       type: object

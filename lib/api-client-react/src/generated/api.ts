@@ -24,6 +24,7 @@ import type {
   CreateRecipeBody,
   DashboardData,
   ErrorResponse,
+  GenerateMealPlanBody,
   GroceryItem,
   GroceryList,
   GroceryListWithItems,
@@ -1540,6 +1541,93 @@ export const useDeleteMealPlan = <
   TContext
 > => {
   return useMutation(getDeleteMealPlanMutationOptions(options));
+};
+
+/**
+ * @summary AI-generate a full week of meals for a plan
+ */
+export const getGenerateMealPlanUrl = (id: number) => {
+  return `/api/meal-plans/${id}/generate`;
+};
+
+export const generateMealPlan = async (
+  id: number,
+  generateMealPlanBody?: GenerateMealPlanBody,
+  options?: RequestInit,
+): Promise<MealPlanWithMeals> => {
+  return customFetch<MealPlanWithMeals>(getGenerateMealPlanUrl(id), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(generateMealPlanBody),
+  });
+};
+
+export const getGenerateMealPlanMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof generateMealPlan>>,
+    TError,
+    { id: number; data: BodyType<GenerateMealPlanBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof generateMealPlan>>,
+  TError,
+  { id: number; data: BodyType<GenerateMealPlanBody> },
+  TContext
+> => {
+  const mutationKey = ["generateMealPlan"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof generateMealPlan>>,
+    { id: number; data: BodyType<GenerateMealPlanBody> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return generateMealPlan(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type GenerateMealPlanMutationResult = NonNullable<
+  Awaited<ReturnType<typeof generateMealPlan>>
+>;
+export type GenerateMealPlanMutationBody = BodyType<GenerateMealPlanBody>;
+export type GenerateMealPlanMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary AI-generate a full week of meals for a plan
+ */
+export const useGenerateMealPlan = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof generateMealPlan>>,
+    TError,
+    { id: number; data: BodyType<GenerateMealPlanBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof generateMealPlan>>,
+  TError,
+  { id: number; data: BodyType<GenerateMealPlanBody> },
+  TContext
+> => {
+  return useMutation(getGenerateMealPlanMutationOptions(options));
 };
 
 /**
