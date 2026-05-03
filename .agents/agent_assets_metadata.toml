@@ -1,0 +1,20 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "pxB-s7-L822cM2lRfE6_u"
+uri = "file://artifacts/prepsmart-mobile/assets/images/icon.png"
+type = "image"
+title = "prepsmart app icon green leaf fork"
+
+[[generated]]
+id = "JBWSaYtYrl4FM80vamAx9"
+uri = "file://artifacts/prepsmart-mobile/assets/images/meal_prep_hero.png"
+type = "image"
+title = "meal prep bowls hero image"
+
+[[generated]]
+id = "Ssm2uEMlPaSmhgUq8uKDL"
+uri = "file://artifacts/prepsmart-mobile/assets/images/ingredients_bg.png"
+type = "image"
+title = "fresh ingredients flat lay"
