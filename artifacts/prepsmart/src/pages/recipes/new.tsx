@@ -195,7 +195,7 @@ export default function NewRecipe() {
 
               {/* Ingredients */}
               <div className="space-y-2">
-                <FormLabel>Ingredients</FormLabel>
+                <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Ingredients</label>
                 <div className="flex gap-2">
                   <Input
                     placeholder="Add an ingredient..."
