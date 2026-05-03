@@ -44,6 +44,11 @@ export function setAuthTokenGetter(getter: AuthTokenGetter | null): void {
   _authTokenGetter = getter;
 }
 
+// Automatically set the token getter to read from localStorage for the web app
+if (typeof window !== "undefined") {
+  setAuthTokenGetter(() => localStorage.getItem("prepsmart_token"));
+}
+
 function isRequest(input: RequestInfo | URL): input is Request {
   return typeof Request !== "undefined" && input instanceof Request;
 }
