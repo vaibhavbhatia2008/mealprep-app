@@ -210,6 +210,13 @@ export interface GroceryListWithItems {
   items: GroceryItem[];
 }
 
+export interface GenerateGroceryListBody {
+  /** Meal plan to generate from. Defaults to the current week's plan. */
+  mealPlanId?: number;
+  /** Custom name for the generated list. */
+  listName?: string;
+}
+
 export interface CreateGroceryItemBody {
   name: string;
   /** @nullable */

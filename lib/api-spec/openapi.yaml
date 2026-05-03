@@ -561,6 +561,31 @@ paths:
               schema:
                 $ref: "#/components/schemas/GroceryListWithItems"
 
+  /grocery-lists/generate-from-plan:
+    post:
+      operationId: generateGroceryListFromPlan
+      tags: [groceryLists]
+      summary: AI-generate a consolidated grocery list from the current meal plan
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateGroceryListBody"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GroceryListWithItems"
+        "400":
+          description: No active meal plan or no meals scheduled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /grocery-lists/{id}:
     get:
       operationId: getGroceryList
@@ -986,6 +1011,16 @@ components:
         - mealPlanId
         - createdAt
         - items
+
+    GenerateGroceryListBody:
+      type: object
+      properties:
+        mealPlanId:
+          type: integer
+          description: "Meal plan to generate from. Defaults to the current week's plan."
+        listName:
+          type: string
+          description: "Custom name for the generated list."
 
     CreateGroceryListBody:
       type: object

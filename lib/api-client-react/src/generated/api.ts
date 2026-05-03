@@ -24,6 +24,7 @@ import type {
   CreateRecipeBody,
   DashboardData,
   ErrorResponse,
+  GenerateGroceryListBody,
   GenerateMealPlanBody,
   GroceryItem,
   GroceryList,
@@ -2049,6 +2050,96 @@ export const useCreateGroceryList = <
   TContext
 > => {
   return useMutation(getCreateGroceryListMutationOptions(options));
+};
+
+/**
+ * @summary AI-generate a consolidated grocery list from the current meal plan
+ */
+export const getGenerateGroceryListFromPlanUrl = () => {
+  return `/api/grocery-lists/generate-from-plan`;
+};
+
+export const generateGroceryListFromPlan = async (
+  generateGroceryListBody?: GenerateGroceryListBody,
+  options?: RequestInit,
+): Promise<GroceryListWithItems> => {
+  return customFetch<GroceryListWithItems>(
+    getGenerateGroceryListFromPlanUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(generateGroceryListBody),
+    },
+  );
+};
+
+export const getGenerateGroceryListFromPlanMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof generateGroceryListFromPlan>>,
+    TError,
+    { data: BodyType<GenerateGroceryListBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof generateGroceryListFromPlan>>,
+  TError,
+  { data: BodyType<GenerateGroceryListBody> },
+  TContext
+> => {
+  const mutationKey = ["generateGroceryListFromPlan"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof generateGroceryListFromPlan>>,
+    { data: BodyType<GenerateGroceryListBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return generateGroceryListFromPlan(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type GenerateGroceryListFromPlanMutationResult = NonNullable<
+  Awaited<ReturnType<typeof generateGroceryListFromPlan>>
+>;
+export type GenerateGroceryListFromPlanMutationBody =
+  BodyType<GenerateGroceryListBody>;
+export type GenerateGroceryListFromPlanMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary AI-generate a consolidated grocery list from the current meal plan
+ */
+export const useGenerateGroceryListFromPlan = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof generateGroceryListFromPlan>>,
+    TError,
+    { data: BodyType<GenerateGroceryListBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof generateGroceryListFromPlan>>,
+  TError,
+  { data: BodyType<GenerateGroceryListBody> },
+  TContext
+> => {
+  return useMutation(getGenerateGroceryListFromPlanMutationOptions(options));
 };
 
 /**

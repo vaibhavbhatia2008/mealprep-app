@@ -417,6 +417,22 @@ export const CreateGroceryListBody = zod.object({
 });
 
 /**
+ * @summary AI-generate a consolidated grocery list from the current meal plan
+ */
+export const GenerateGroceryListFromPlanBody = zod.object({
+  mealPlanId: zod
+    .number()
+    .optional()
+    .describe(
+      "Meal plan to generate from. Defaults to the current week's plan.",
+    ),
+  listName: zod
+    .string()
+    .optional()
+    .describe("Custom name for the generated list."),
+});
+
+/**
  * @summary Get a grocery list with items
  */
 export const GetGroceryListParams = zod.object({
